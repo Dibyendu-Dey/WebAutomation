@@ -1,6 +1,7 @@
 """
 Conftest.py is a centralized fixture available to all Pytest test file.
 """
+import configparser
 
 """Let generalize the browser invocation and pass/select the browser at the run time using Pytest Command line 
 Options """
@@ -46,4 +47,17 @@ def setup(request):  # request is an object of the fixture
         driver = webdriver.Firefox(service=IEService(IEDriverManager().install()))
     driver.implicitly_wait(20)
     driver.get("https://rahulshettyacademy.com/AutomationPractice/")
+    request.cls.driver = driver  # now the driver class variable has knowledge of the driver
+    yield
+    driver.close()
 
+
+@pytest.fixture()
+def get_test_data(request):
+    """Fixture to parse a .ini file and read the values"""
+    # instantiate
+    parser = configparser.ConfigParser()
+    # parse the file
+    parser.read("C:\\Users\\deybi\\PycharmProjects\\WebAutomation\\tests\\TestData.ini")
+    # return the object
+    request.cls.data = parser  # now the data clas variable has knowledge of the parser
